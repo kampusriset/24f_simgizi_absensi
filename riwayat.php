@@ -117,3 +117,99 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 </div>
 
 <?php include 'layout/footer.php'; ?>
+<style>
+.card{
+    border:none;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.card-header{
+    background:linear-gradient(135deg,#00c6ff,#0072ff)!important;
+    border:none;
+    padding:20px 25px;
+}
+
+.card-header h5{
+    font-size:30px;
+    font-weight:700;
+    margin:0;
+}
+
+.search-box{
+    width:420px;
+}
+
+.search-box input{
+    border:none;
+    border-radius:12px;
+    padding:10px 15px;
+}
+
+.search-box input:focus{
+    box-shadow:0 0 0 3px rgba(255,255,255,.35);
+}
+
+.btn-search{
+    background:#fff;
+    color:#0072ff;
+    border:none;
+    border-radius:12px;
+    font-weight:600;
+    min-width:70px;
+}
+
+.btn-search:hover{
+    transform:translateY(-2px);
+}
+
+.btn-reset{
+    background:#dc3545;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-weight:600;
+}
+
+.btn-reset:hover{
+    background:#bb2d3b;
+    color:white;
+}
+
+.table{
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.table-dark{
+    background:#1f2937;
+}
+
+.table th{
+    padding:16px;
+}
+
+.table td{
+    padding:16px;
+    vertical-align:middle;
+}
+
+.table tbody tr{
+    transition:.3s;
+}
+
+.table tbody tr:hover{
+    background:#eef6ff;
+}
+
+.badge{
+    padding:8px 15px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.card-body{
+    background:#fafafa;
+}
+</style>
