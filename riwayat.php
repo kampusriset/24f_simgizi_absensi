@@ -9,14 +9,32 @@ if(!isset($_SESSION['login'])){
 include 'koneksi.php';
 include 'layout/header.php';
 include 'layout/sidebar.php';
+
+$keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 ?>
 
 <div class="col-md-10 p-4">
 
     <div class="card shadow">
 
-        <div class="card-header bg-info text-white">
-            Riwayat Absensi
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">Riwayat Absensi</h5>
+
+            <form method="GET" class="d-flex" style="width:300px;">
+                <input
+                    type="text"
+                    name="keyword"
+                    class="form-control form-control-sm me-2"
+                    placeholder="Cari nama..."
+                    value="<?= $keyword; ?>"
+                >
+
+                <button type="submit" class="btn btn-light btn-sm">
+                    🔍
+                </button>
+            </form>
+
         </div>
 
         <div class="card-body">
@@ -25,10 +43,10 @@ include 'layout/sidebar.php';
 
                 <thead class="table-dark">
                     <tr>
-                        <th>No</th>
+                        <th width="80">No</th>
                         <th>Nama</th>
                         <th>Tanggal</th>
-                        <th>Status</th>
+                        <th width="150">Status</th>
                     </tr>
                 </thead>
 
@@ -37,15 +55,24 @@ include 'layout/sidebar.php';
                 <?php
                 $no = 1;
 
-                $q = mysqli_query($conn,"
+                $query = "
                     SELECT a.*, p.nama
                     FROM absensi a
                     JOIN penerima_manfaat p
                     ON a.id_penerima = p.id_penerima
-                    ORDER BY a.id_absensi DESC
-                ");
+                ";
 
-                while($d = mysqli_fetch_assoc($q)){
+                if(!empty($keyword)){
+                    $query .= " WHERE p.nama LIKE '%$keyword%'";
+                }
+
+                $query .= " ORDER BY a.id_absensi DESC";
+
+                $q = mysqli_query($conn, $query);
+
+                if(mysqli_num_rows($q) > 0){
+
+                    while($d = mysqli_fetch_assoc($q)){
                 ?>
 
                 <tr>
@@ -54,7 +81,7 @@ include 'layout/sidebar.php';
                     <td><?= $d['tanggal'] ?></td>
 
                     <td>
-                        <?php if($d['status_hadir']=='Hadir'){ ?>
+                        <?php if($d['status_hadir'] == 'Hadir'){ ?>
                             <span class="badge bg-success">Hadir</span>
                         <?php } else { ?>
                             <span class="badge bg-danger">Tidak Hadir</span>
@@ -62,6 +89,15 @@ include 'layout/sidebar.php';
                     </td>
                 </tr>
 
+                <?php
+                    }
+                } else {
+                ?>
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            Data tidak ditemukan
+                        </td>
+                    </tr>
                 <?php } ?>
 
                 </tbody>
