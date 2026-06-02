@@ -21,18 +21,24 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 
             <h5 class="mb-0">Riwayat Absensi</h5>
 
-            <form method="GET" class="d-flex" style="width:300px;">
+            <form method="GET" class="d-flex" style="width:400px;">
+
                 <input
                     type="text"
                     name="keyword"
                     class="form-control form-control-sm me-2"
                     placeholder="Cari nama..."
-                    value="<?= $keyword; ?>"
+                    value="<?= htmlspecialchars($keyword); ?>"
                 >
 
-                <button type="submit" class="btn btn-light btn-sm">
+                <button type="submit" class="btn btn-light btn-sm me-2">
                     🔍
                 </button>
+
+                <a href="<?= $_SERVER['PHP_SELF']; ?>" class="btn btn-secondary btn-sm">
+                    Reset
+                </a>
+
             </form>
 
         </div>
