@@ -11,17 +11,28 @@ include 'layout/header.php';
 include 'layout/sidebar.php';
 
 $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'tanggal';
+$order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
+
+$allowed_sort = ['nama','tanggal','status_hadir'];
+
+if(!in_array($sort,$allowed_sort)){
+    $sort = 'tanggal';
+}
+
+$order = strtoupper($order) == 'ASC' ? 'ASC' : 'DESC';
 ?>
 
 <div class="col-md-10 p-4">
 
     <div class="card shadow">
 
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <div class="card-header text-white d-flex justify-content-between align-items-center">
 
             <h5 class="mb-0">Riwayat Absensi</h5>
 
-            <form method="GET" class="d-flex" style="width:400px;">
+            <form method="GET" class="d-flex search-box">
 
                 <input
                     type="text"
@@ -30,6 +41,30 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
                     placeholder="Cari nama..."
                     value="<?= htmlspecialchars($keyword); ?>"
                 >
+
+                <select name="sort" class="form-select form-select-sm me-2">
+                    <option value="tanggal" <?= $sort=='tanggal'?'selected':'' ?>>
+                        Tanggal
+                    </option>
+
+                    <option value="nama" <?= $sort=='nama'?'selected':'' ?>>
+                        Nama
+                    </option>
+
+                    <option value="status_hadir" <?= $sort=='status_hadir'?'selected':'' ?>>
+                        Status
+                    </option>
+                </select>
+
+                <select name="order" class="form-select form-select-sm me-2">
+                    <option value="DESC" <?= $order=='DESC'?'selected':'' ?>>
+                        DESC
+                    </option>
+
+                    <option value="ASC" <?= $order=='ASC'?'selected':'' ?>>
+                        ASC
+                    </option>
+                </select>
 
                 <button type="submit" class="btn btn-light btn-sm me-2">
                     🔍
@@ -45,7 +80,7 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 
         <div class="card-body">
 
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-hover">
 
                 <thead class="table-dark">
                     <tr>
@@ -72,7 +107,15 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
                     $query .= " WHERE p.nama LIKE '%$keyword%'";
                 }
 
-                $query .= " ORDER BY a.id_absensi DESC";
+                if($sort == 'nama'){
+                    $query .= " ORDER BY p.nama $order";
+                }
+                elseif($sort == 'status_hadir'){
+                    $query .= " ORDER BY a.status_hadir $order";
+                }
+                else{
+                    $query .= " ORDER BY a.tanggal $order";
+                }
 
                 $q = mysqli_query($conn, $query);
 
@@ -83,14 +126,20 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td><?= $d['nama'] ?></td>
+
+                    <td><?= htmlspecialchars($d['nama']) ?></td>
+
                     <td><?= $d['tanggal'] ?></td>
 
                     <td>
                         <?php if($d['status_hadir'] == 'Hadir'){ ?>
-                            <span class="badge bg-success">Hadir</span>
+                            <span class="badge bg-success">
+                                Hadir
+                            </span>
                         <?php } else { ?>
-                            <span class="badge bg-danger">Tidak Hadir</span>
+                            <span class="badge bg-danger">
+                                Tidak Hadir
+                            </span>
                         <?php } ?>
                     </td>
                 </tr>
@@ -117,6 +166,7 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 </div>
 
 <?php include 'layout/footer.php'; ?>
+
 <style>
 .card{
     border:none;
@@ -138,16 +188,17 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 }
 
 .search-box{
-    width:420px;
+    width:700px;
 }
 
-.search-box input{
+.search-box input,
+.search-box select{
     border:none;
     border-radius:12px;
-    padding:10px 15px;
 }
 
-.search-box input:focus{
+.search-box input:focus,
+.search-box select:focus{
     box-shadow:0 0 0 3px rgba(255,255,255,.35);
 }
 
@@ -156,12 +207,6 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
     color:#0072ff;
     border:none;
     border-radius:12px;
-    font-weight:600;
-    min-width:70px;
-}
-
-.btn-search:hover{
-    transform:translateY(-2px);
 }
 
 .btn-reset{
@@ -169,12 +214,6 @@ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
     color:white;
     border:none;
     border-radius:12px;
-    font-weight:600;
-}
-
-.btn-reset:hover{
-    background:#bb2d3b;
-    color:white;
 }
 
 .table{
