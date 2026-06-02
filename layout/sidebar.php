@@ -14,5 +14,9 @@
         📋 Riwayat Absensi
     </a>
 
+    <a href="grafik.php" class="d-block mb-2">
+        📊 Grafik Absensi
+    </a>
+
     <hr>
 </div>
